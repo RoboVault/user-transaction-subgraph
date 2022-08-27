@@ -6,3 +6,5 @@ encrypt*
 build/
 
 .env
+
+generated/

@@ -41,13 +41,14 @@ export function handleTransfer(event: Transfer): void {
       event.params.sender,
       event.params.receiver,
       event.params.value,
-      'transfer'
+      'deposit'
     )
 }
 
 function saveDepositOrWithdraw(event: ethereum.Event, recipient: Address, amount: BigInt, type: string): void {
   const entity = new DepositOrWithdraw(`${event.transaction.hash.toHex()}:${event.logIndex}`)
   const vault = Vault.bind(event.address)
+  entity.vault = event.address
   entity.user = recipient
   entity.hash = event.transaction.hash
   entity.amount = amount
@@ -68,6 +69,7 @@ function saveTransaction(
 ): void {
   const tx = new Transaction(`${event.transaction.hash.toHex()}:${event.logIndex}`)
   const vault = Vault.bind(event.address)
+  tx.vault = event.address
   tx.from = from
   tx.to = to
   tx.hash = event.transaction.hash

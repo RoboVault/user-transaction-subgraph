@@ -1,6 +1,7 @@
 
 type DepositOrWithdraw @entity {
   id: ID!
+  vault: Bytes!
   user: Bytes!
   hash: Bytes!
   amount: BigInt! 
@@ -13,6 +14,7 @@ type DepositOrWithdraw @entity {
 
 type Transaction @entity {
   id: ID!
+  vault: Bytes!
   from: Bytes!
   to: Bytes!
   hash: Bytes!
