@@ -564,7 +564,7 @@ export class StrategyAddedToQueue__Params {
   }
 }
 
-export class Transaction__strategiesResult {
+export class Vault__strategiesResult {
   value0: BigInt;
   value1: BigInt;
   value2: BigInt;
@@ -648,9 +648,9 @@ export class Transaction__strategiesResult {
   }
 }
 
-export class Transaction extends ethereum.SmartContract {
-  static bind(address: Address): Transaction {
-    return new Transaction("Transaction", address);
+export class Vault extends ethereum.SmartContract {
+  static bind(address: Address): Vault {
+    return new Vault("Vault", address);
   }
 
   apiVersion(): string {
@@ -1429,14 +1429,14 @@ export class Transaction extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toAddress());
   }
 
-  strategies(arg0: Address): Transaction__strategiesResult {
+  strategies(arg0: Address): Vault__strategiesResult {
     let result = super.call(
       "strategies",
       "strategies(address):(uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256)",
       [ethereum.Value.fromAddress(arg0)]
     );
 
-    return new Transaction__strategiesResult(
+    return new Vault__strategiesResult(
       result[0].toBigInt(),
       result[1].toBigInt(),
       result[2].toBigInt(),
@@ -1449,9 +1449,7 @@ export class Transaction extends ethereum.SmartContract {
     );
   }
 
-  try_strategies(
-    arg0: Address
-  ): ethereum.CallResult<Transaction__strategiesResult> {
+  try_strategies(arg0: Address): ethereum.CallResult<Vault__strategiesResult> {
     let result = super.tryCall(
       "strategies",
       "strategies(address):(uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256)",
@@ -1462,7 +1460,7 @@ export class Transaction extends ethereum.SmartContract {
     }
     let value = result.value;
     return ethereum.CallResult.fromValue(
-      new Transaction__strategiesResult(
+      new Vault__strategiesResult(
         value[0].toBigInt(),
         value[1].toBigInt(),
         value[2].toBigInt(),

@@ -42,13 +42,22 @@ export class UserTransaction extends Entity {
     this.set("id", Value.fromString(value));
   }
 
-  get user(): string {
+  get user(): Bytes {
     let value = this.get("user");
-    return value!.toString();
+    return value!.toBytes();
   }
 
-  set user(value: string) {
-    this.set("user", Value.fromString(value));
+  set user(value: Bytes) {
+    this.set("user", Value.fromBytes(value));
+  }
+
+  get hash(): Bytes {
+    let value = this.get("hash");
+    return value!.toBytes();
+  }
+
+  set hash(value: Bytes) {
+    this.set("hash", Value.fromBytes(value));
   }
 
   get amount(): BigInt {
@@ -58,24 +67,6 @@ export class UserTransaction extends Entity {
 
   set amount(value: BigInt) {
     this.set("amount", Value.fromBigInt(value));
-  }
-
-  get balance(): Bytes {
-    let value = this.get("balance");
-    return value!.toBytes();
-  }
-
-  set balance(value: Bytes) {
-    this.set("balance", Value.fromBytes(value));
-  }
-
-  get pps(): BigInt {
-    let value = this.get("pps");
-    return value!.toBigInt();
-  }
-
-  set pps(value: BigInt) {
-    this.set("pps", Value.fromBigInt(value));
   }
 
   get type(): string | null {
@@ -93,5 +84,41 @@ export class UserTransaction extends Entity {
     } else {
       this.set("type", Value.fromString(<string>value));
     }
+  }
+
+  get balance(): BigInt {
+    let value = this.get("balance");
+    return value!.toBigInt();
+  }
+
+  set balance(value: BigInt) {
+    this.set("balance", Value.fromBigInt(value));
+  }
+
+  get pps(): BigInt {
+    let value = this.get("pps");
+    return value!.toBigInt();
+  }
+
+  set pps(value: BigInt) {
+    this.set("pps", Value.fromBigInt(value));
+  }
+
+  get ts(): BigInt {
+    let value = this.get("ts");
+    return value!.toBigInt();
+  }
+
+  set ts(value: BigInt) {
+    this.set("ts", Value.fromBigInt(value));
+  }
+
+  get blockNumber(): BigInt {
+    let value = this.get("blockNumber");
+    return value!.toBigInt();
+  }
+
+  set blockNumber(value: BigInt) {
+    this.set("blockNumber", Value.fromBigInt(value));
   }
 }

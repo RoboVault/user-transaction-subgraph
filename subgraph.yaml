@@ -3,11 +3,12 @@ schema:
   file: ./schema.graphql
 dataSources:
   - kind: ethereum
-    name: Transaction
-    network: avalanche
+    name: Vault
+    network: avalanche 
     source:
+      startBlock: 16650315
       address: "0x49d743E645C90ef4c6D5134533c1e62D08867b14"
-      abi: Transaction
+      abi: Vault
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -16,80 +17,15 @@ dataSources:
         - Transfer
         - Approval
         - Deposit
-        - Withdraw
-        - Sweep
-        - LockedProfitDegradationUpdated
-        - StrategyAdded
-        - StrategyReported
-        - UpdateGovernance
-        - UpdateManagement
-        - UpdateRewards
-        - UpdateDepositLimit
-        - UpdatePerformanceFee
-        - UpdateManagementFee
-        - UpdateGuardian
-        - EmergencyShutdown
-        - UpdateWithdrawalQueue
-        - StrategyUpdateDebtRatio
-        - StrategyUpdateMinDebtPerHarvest
-        - StrategyUpdateMaxDebtPerHarvest
-        - StrategyUpdatePerformanceFee
-        - StrategyMigrated
-        - StrategyRevoked
-        - StrategyRemovedFromQueue
-        - StrategyAddedToQueue
       abis:
-        - name: Transaction
-          file: ./abis/Transaction.json
+        - name: Vault
+          file: ./abis/Vault.json
       eventHandlers:
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handleTransfer
-        - event: Approval(indexed address,indexed address,uint256)
-          handler: handleApproval
         - event: Deposit(indexed address,uint256,uint256)
           handler: handleDeposit
         - event: Withdraw(indexed address,uint256,uint256)
           handler: handleWithdraw
-        - event: Sweep(indexed address,uint256)
-          handler: handleSweep
-        - event: LockedProfitDegradationUpdated(uint256)
-          handler: handleLockedProfitDegradationUpdated
-        - event: StrategyAdded(indexed address,uint256,uint256,uint256,uint256)
-          handler: handleStrategyAdded
-        - event: StrategyReported(indexed address,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256)
-          handler: handleStrategyReported
-        - event: UpdateGovernance(address)
-          handler: handleUpdateGovernance
-        - event: UpdateManagement(address)
-          handler: handleUpdateManagement
-        - event: UpdateRewards(address)
-          handler: handleUpdateRewards
-        - event: UpdateDepositLimit(uint256)
-          handler: handleUpdateDepositLimit
-        - event: UpdatePerformanceFee(uint256)
-          handler: handleUpdatePerformanceFee
-        - event: UpdateManagementFee(uint256)
-          handler: handleUpdateManagementFee
-        - event: UpdateGuardian(address)
-          handler: handleUpdateGuardian
-        - event: EmergencyShutdown(bool)
-          handler: handleEmergencyShutdown
-        - event: UpdateWithdrawalQueue(address[20])
-          handler: handleUpdateWithdrawalQueue
-        - event: StrategyUpdateDebtRatio(indexed address,uint256)
-          handler: handleStrategyUpdateDebtRatio
-        - event: StrategyUpdateMinDebtPerHarvest(indexed address,uint256)
-          handler: handleStrategyUpdateMinDebtPerHarvest
-        - event: StrategyUpdateMaxDebtPerHarvest(indexed address,uint256)
-          handler: handleStrategyUpdateMaxDebtPerHarvest
-        - event: StrategyUpdatePerformanceFee(indexed address,uint256)
-          handler: handleStrategyUpdatePerformanceFee
-        - event: StrategyMigrated(indexed address,indexed address)
-          handler: handleStrategyMigrated
-        - event: StrategyRevoked(indexed address)
-          handler: handleStrategyRevoked
-        - event: StrategyRemovedFromQueue(indexed address)
-          handler: handleStrategyRemovedFromQueue
-        - event: StrategyAddedToQueue(indexed address)
-          handler: handleStrategyAddedToQueue
-      file: ./src/transaction.ts
+
+      file: ./src/vault.ts
