@@ -1,4 +1,4 @@
-import { Address, BigInt, ethereum, Value } from "@graphprotocol/graph-ts"
+import { Address, BigInt, ethereum, log, Value } from "@graphprotocol/graph-ts"
 import {
   Vault,
   Transfer,
@@ -6,44 +6,74 @@ import {
   Deposit,
   Withdraw,
   Sweep,
-  LockedProfitDegradationUpdated,
-  StrategyAdded,
-  StrategyReported,
-  UpdateGovernance,
-  UpdateManagement,
-  UpdateRewards,
-  UpdateDepositLimit,
-  UpdatePerformanceFee,
-  UpdateManagementFee,
-  UpdateGuardian,
-  EmergencyShutdown,
-  UpdateWithdrawalQueue,
-  StrategyUpdateDebtRatio,
-  StrategyUpdateMinDebtPerHarvest,
-  StrategyUpdateMaxDebtPerHarvest,
-  StrategyUpdatePerformanceFee,
-  StrategyMigrated,
-  StrategyRevoked,
-  StrategyRemovedFromQueue,
-  StrategyAddedToQueue
 } from "../generated/Vault/Vault"
-import { UserTransaction } from "../generated/schema"
+import { DepositOrWithdraw, Transaction } from "../generated/schema"
+
+const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 
 export function handleDeposit(event: Deposit): void {
-  saveUserTransaction(event, event.params.recipient, event.params.amount, 'deposit')
+    saveDepositOrWithdraw(event, event.params.recipient, event.params.amount, 'deposit')
+
+    saveTransaction(
+        event,
+        Address.fromString(ZERO_ADDRESS),
+        event.params.recipient,
+        event.params.amount,
+        'deposit'
+    )
 }
 
 export function handleWithdraw(event: Withdraw): void {
-  saveUserTransaction(event, event.params.recipient, event.params.amount, 'withdraw')
+    saveDepositOrWithdraw(event, event.params.recipient, event.params.amount, 'withdraw')
+
+    saveTransaction(
+        event,
+        event.params.recipient,
+        Address.fromString(ZERO_ADDRESS),
+        event.params.amount,
+        'withdraw'
+    )
 }
 
-function saveUserTransaction(event: ethereum.Event, recipient: Address, amount: BigInt, type: string): void {
-  const tx = new UserTransaction(event.transaction.from.toHex())
+export function handleTransfer(event: Transfer): void {
+    saveTransaction(
+      event,
+      event.params.sender,
+      event.params.receiver,
+      event.params.value,
+      'deposit'
+    )
+}
+
+function saveDepositOrWithdraw(event: ethereum.Event, recipient: Address, amount: BigInt, type: string): void {
+  const entity = new DepositOrWithdraw(event.transaction.hash.toHex())
   const vault = Vault.bind(event.address)
-  tx.user = recipient
+  entity.user = recipient
+  entity.hash = event.transaction.hash
+  entity.amount = amount
+  entity.balance = vault.balanceOf(recipient)
+  entity.pps = vault.pricePerShare()
+  entity.ts = event.block.timestamp
+  entity.blockNumber = event.block.number
+  entity.type = type
+  entity.save()
+}
+
+function saveTransaction(
+    event: ethereum.Event, 
+    from: Address, 
+    to: Address, 
+    amount: BigInt, 
+    type: string
+): void {
+  const tx = new Transaction(event.transaction.hash.toHex())
+  const vault = Vault.bind(event.address)
+  tx.from = from
+  tx.to = to
   tx.hash = event.transaction.hash
   tx.amount = amount
-  tx.balance = vault.balanceOf(recipient)
+  tx.fromBalance = vault.balanceOf(from)
+  tx.toBalance = vault.balanceOf(to)
   tx.pps = vault.pricePerShare()
   tx.ts = event.block.timestamp
   tx.blockNumber = event.block.number
@@ -51,14 +81,9 @@ function saveUserTransaction(event: ethereum.Event, recipient: Address, amount: 
   tx.save()
 }
 
-export function handleTransfer(event: Transfer): void {
-
-}
 export function handleApproval(event: Approval): void {
 
 }
 export function handleSweep(event: Sweep): void {
   
 }
-
-

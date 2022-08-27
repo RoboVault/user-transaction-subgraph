@@ -1,12 +1,26 @@
 
-type UserTransaction @entity {
-  id: ID! 
+type DepositOrWithdraw @entity {
+  id: ID!
   user: Bytes!
   hash: Bytes!
   amount: BigInt! 
-  type: String 
+  type: String! 
   balance: BigInt! 
   pps: BigInt! 
+  ts: BigInt!
+  blockNumber: BigInt!
+}
+
+type Transaction @entity {
+  id: ID!
+  from: Bytes!
+  to: Bytes!
+  hash: Bytes!
+  amount: BigInt!
+  fromBalance: BigInt!
+  toBalance: BigInt!
+  type: String!
+  pps: BigInt!
   ts: BigInt!
   blockNumber: BigInt!
 }
