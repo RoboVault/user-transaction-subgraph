@@ -4,7 +4,7 @@ schema:
 dataSources:
   - kind: ethereum
     name: Vault
-    network: avalanche 
+    network: fantom 
     source: 
       startBlock: 20000000
       address: "0x1B6ecdA7Fd559793c0Def1F1D90A2Df4887B9718"
@@ -30,7 +30,7 @@ dataSources:
       file: ./src/vault.ts
   - kind: ethereum
     name: Vault1
-    network: avalanche 
+    network: fantom 
     source: 
       startBlock: 20000000
       address: "0xd10112521e860bdE82FD34f88113052e434930C4"
@@ -56,7 +56,7 @@ dataSources:
       file: ./src/vault.ts
   - kind: ethereum
     name: Vault2
-    network: avalanche 
+    network: fantom 
     source: 
       startBlock: 20000000
       address: "0x92D2DdF8eed6f2bdB9a7890a00B07a48C9c7A658"
@@ -82,7 +82,7 @@ dataSources:
       file: ./src/vault.ts
   - kind: ethereum
     name: Vault3
-    network: avalanche 
+    network: fantom 
     source: 
       startBlock: 20000000
       address: "0x38Da23Ef41333bE0d309Cd63166035FF3b7E2000"
@@ -108,7 +108,7 @@ dataSources:
       file: ./src/vault.ts
   - kind: ethereum
     name: Vault4
-    network: avalanche 
+    network: fantom 
     source: 
       startBlock: 20000000
       address: "0x13994411Eda808B354F62db5490B344F431499ae"
@@ -134,7 +134,7 @@ dataSources:
       file: ./src/vault.ts
   - kind: ethereum
     name: Vault5
-    network: avalanche 
+    network: fantom 
     source: 
       startBlock: 20000000
       address: "0x81F0f4fDF5148f09aAE811b5995D94F703ED0963"
@@ -160,7 +160,7 @@ dataSources:
       file: ./src/vault.ts
   - kind: ethereum
     name: Vault6
-    network: avalanche 
+    network: fantom 
     source: 
       startBlock: 20000000
       address: "0x5EBeC9880a276841325081ED3ba728284E48Da76"
@@ -186,7 +186,7 @@ dataSources:
       file: ./src/vault.ts
   - kind: ethereum
     name: Vault7
-    network: avalanche 
+    network: fantom 
     source: 
       startBlock: 20000000
       address: "0x14490098C27b864249FB3bAB629420943ac04cF3"
@@ -212,7 +212,7 @@ dataSources:
       file: ./src/vault.ts
   - kind: ethereum
     name: Vault8
-    network: avalanche 
+    network: fantom 
     source: 
       startBlock: 20000000
       address: "0x21Ec0c99810C6f8703d3eEDF50e5d779061590FD"
@@ -238,7 +238,7 @@ dataSources:
       file: ./src/vault.ts
   - kind: ethereum
     name: Vault9
-    network: avalanche 
+    network: fantom 
     source: 
       startBlock: 20000000
       address: "0x73d07a515cfe8d2C383E1610B959dac33b470A37"

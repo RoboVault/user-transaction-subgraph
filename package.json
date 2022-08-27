@@ -4,7 +4,7 @@
   "scripts": {
     "codegen": "graph codegen",
     "build": "graph build",
-    "deploy": "graph deploy --node https://api.studio.thegraph.com/deploy/ transaction",
+    "deploy": "graph auth --product hosted-service 43764ac885d243b994ef461366b0b069 smoothbot/user-transactions-fantom",
     "create-local": "graph create --node http://localhost:8020/ transaction",
     "remove-local": "graph remove --node http://localhost:8020/ transaction",
     "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 transaction",
