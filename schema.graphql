@@ -58,5 +58,19 @@ type User @entity {
   vault: Bytes!
   sumDeposits: BigInt!
   sumWithdrawals: BigInt!
+  balance: BigInt!
   profits: BigInt! # balanceOf(user) + sumWithdrawals - sumDeposits
+  transactions: [UserTransaction!]! @derivedFrom(field: "user")
+}
+
+type UserTransaction @entity {
+  id: ID! # address:vault
+  hash: Bytes!
+  user: User
+  from: Bytes!
+  to: Bytes!
+  value: BigInt!
+  tokenValue: BigInt!
+  type: String!
+  pps: BigInt!
 }

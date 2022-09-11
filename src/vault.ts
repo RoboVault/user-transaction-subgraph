@@ -1,4 +1,4 @@
-import { Address, bigInt, BigInt, ethereum, log, TypedMap, Value } from "@graphprotocol/graph-ts"
+import { Address, bigInt, BigInt, Bytes, ethereum, log, typeConversion, TypedMap, Value } from "@graphprotocol/graph-ts"
 import {
   Vault,
   Transfer,
@@ -9,35 +9,36 @@ import {
   StrategyReported,
 } from "../generated/Vault/Vault"
 import { Oracle } from "../generated/Vault/Oracle"
-import { DepositOrWithdraw, StrategyReport, Transaction, User } from "../generated/schema"
+import { DepositOrWithdraw, StrategyReport, Transaction, User, UserTransaction } from "../generated/schema"
 // import { Oracle } from '../generated/templates'
 
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
+const BPS_MAX = BigInt.fromU32(1000000)
 
 export function handleDeposit(event: Deposit): void {
-    log.info('handleDeposit', [])
-    saveDepositOrWithdraw(event, event.params.recipient, event.params.amount, 'deposit')
+    // log.info('handleDeposit', [])
+    // saveDepositOrWithdraw(event, event.params.recipient, event.params.amount, 'deposit')
 
-    saveTransaction(
-        event,
-        Address.fromString(ZERO_ADDRESS),
-        event.params.recipient,
-        event.params.amount,
-        'deposit'
-    )
+    // saveTransaction(
+    //     event,
+    //     Address.fromString(ZERO_ADDRESS),
+    //     event.params.recipient,
+    //     event.params.amount,
+    //     'deposit'
+    // )
 }
 
 export function handleWithdraw(event: Withdraw): void {
-    log.info('handleWithdraw', [])
-    saveDepositOrWithdraw(event, event.params.recipient, event.params.amount, 'withdraw')
+    // log.info('handleWithdraw', [])
+    // saveDepositOrWithdraw(event, event.params.recipient, event.params.amount, 'withdraw')
 
-    saveTransaction(
-        event,
-        event.params.recipient,
-        Address.fromString(ZERO_ADDRESS),
-        event.params.amount,
-        'withdraw'
-    )
+    // saveTransaction(
+    //     event,
+    //     event.params.recipient,
+    //     Address.fromString(ZERO_ADDRESS),
+    //     event.params.amount,
+    //     'withdraw'
+    // )
 }
 
 export function handleTransfer(event: Transfer): void {
@@ -47,7 +48,7 @@ export function handleTransfer(event: Transfer): void {
         event.params.sender,
         event.params.receiver,
         event.params.value,
-        'deposit'
+        'transfer'
     )
 }
 
@@ -66,6 +67,47 @@ function saveDepositOrWithdraw(event: ethereum.Event, recipient: Address, amount
     entity.save()
 }
 
+function getUserEntity(addr: Address, vault: Address): User {
+  const id = `${addr.toHex()}:${vault.toHex()}`
+  let user = User.load(id)
+  if (user == null) {
+    const user = new User(id)
+    user.addr = addr
+    user.vault = vault
+    user.sumDeposits = BigInt.fromI32(0)
+    user.sumWithdrawals = BigInt.fromI32(0)
+    user.profits = BigInt.fromI32(0)
+    user.balance = BigInt.fromI32(0)
+    // user.transactions = []
+    return user
+  }
+  return user
+}
+
+function createUserTransaction(
+  event: ethereum.Event, 
+  user: string, 
+  from: Bytes, 
+  to: Bytes, 
+  value: BigInt, 
+  tokenValue: BigInt,
+  type: string,
+  pps: BigInt
+): UserTransaction {
+  const id = event.transaction.hash.toHex() + "-" + event.logIndex.toString() + '-' + user
+  const tx = new UserTransaction(id)
+  tx.hash = event.transaction.hash
+  tx.from = from
+  tx.to = to
+  tx.value = value
+  tx.user = user
+  tx.type = type
+  tx.tokenValue = tokenValue
+  tx.pps = pps
+  tx.save()
+  return tx
+}
+
 function saveTransaction(
     event: ethereum.Event, 
     from: Address, 
@@ -73,27 +115,10 @@ function saveTransaction(
     amount: BigInt, 
     type: string
 ): void {
-    const ZERO_ADDRESS = Address.fromString('0x0000000000000000000000000000000000000000')
     const vault = Vault.bind(event.address)
     const pps = vault.pricePerShare()
-
-    if (to != ZERO_ADDRESS) {
-      let user = User.load(to.toHex())
-      if (user == null) {
-        const user = new User(`${to.toHex()}:${event.address}`)
-        user.addr = to
-        user.vault = event.address
-      } 
-
-      
-      const amount = 
-      user?.sumDeposits += 
-    }
-
-    if (from != ZERO_ADDRESS) {
-
-    }
-    
+    const decimals = Bytes.fromBigInt(vault.decimals())[0]
+    const scale = BigInt.fromI32(10).pow(decimals)
 
     // Record transaction
     const tx = new Transaction(`${event.transaction.hash.toHex()}:${event.logIndex}`)
@@ -109,6 +134,47 @@ function saveTransaction(
     tx.blockNumber = event.block.number
     tx.type = type
     tx.save()
+
+    // Vault shares sent to address -> Deposit or Transfer in
+    if (to.toHex() != ZERO_ADDRESS) {
+      const userAddr = to
+      const user = getUserEntity(userAddr, event.address)
+
+      // despoits
+      const sumDeposit = user.sumDeposits
+      const tokenAmount = amount.times(pps).div(scale)
+      user.sumDeposits = sumDeposit.plus(tokenAmount)
+
+      // Profits
+      const balance = vault.balanceOf(userAddr).times(pps).div(scale)
+      user.balance = balance
+      user.profits = balance.plus(user.sumWithdrawals).minus(user.sumDeposits)
+
+      // Save & Store Transaction
+      user.save()
+      createUserTransaction(event, user.id, from, to, amount, tokenAmount, 'deposit', pps)
+
+    }
+
+    // Vault shares sent from address -> Withdrawal or Transfer out
+    if (from.toHex() != ZERO_ADDRESS) {
+      const userAddr = from
+      const user = getUserEntity(userAddr, event.address)
+
+      // Withdrawals
+      const sumWithdrawals = user.sumWithdrawals
+      const tokenAmount = amount.times(pps).div(scale)
+      user.sumWithdrawals = sumWithdrawals.plus(tokenAmount)
+
+      // Profits
+      const balance = vault.balanceOf(userAddr).times(pps).div(scale)
+      user.balance = balance
+      user.profits = balance.plus(user.sumWithdrawals).minus(user.sumDeposits)
+
+      // Save & Store Transaction
+      user.save()
+      createUserTransaction(event, user.id, from, to, amount, tokenAmount, 'withdraw', pps)
+    }
 }
 
 export function handleApproval(event: Approval): void {
@@ -158,8 +224,8 @@ export function handleStrategyReported(event: StrategyReported): void {
   report.performanceFee = performanceFee
   report.strategistFee = strategy.getPerformanceFee()
   report.mgmtFeePaid = BigInt.fromU32(0) // TODO
-  report.performanceFeePaid = event.params.gain.times(performanceFee).div(BigInt.fromU32(10000))
-  report.strategistFeePaid = event.params.gain.times(strategy.getPerformanceFee()).div(BigInt.fromU32(10000))
+  report.performanceFeePaid = event.params.gain.times(performanceFee).div(BPS_MAX)
+  report.strategistFeePaid = event.params.gain.times(strategy.getPerformanceFee()).div(BPS_MAX)
   report.ts = event.block.timestamp
   report.blockNumber = event.block.number
 
