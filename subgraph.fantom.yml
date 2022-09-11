@@ -6,7 +6,7 @@ dataSources:
     name: Vault
     network: fantom 
     source: 
-      startBlock: 20000000
+      startBlock: 22174000
       address: "0x1B6ecdA7Fd559793c0Def1F1D90A2Df4887B9718"
       abi: Vault
     mapping:
@@ -20,6 +20,8 @@ dataSources:
       abis:
         - name: Vault
           file: ./abis/Vault.json
+        - name: Oracle
+          file: ./abis/Oracle.json
       eventHandlers:
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handleTransfer
@@ -27,12 +29,15 @@ dataSources:
           handler: handleDeposit
         - event: Withdraw(indexed address,uint256,uint256)
           handler: handleWithdraw
+        - event: StrategyReported(indexed
+            address,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256)
+          handler: handleStrategyReported
       file: ./src/vault.ts
   - kind: ethereum
     name: Vault1
     network: fantom 
     source: 
-      startBlock: 20000000
+      startBlock: 22174000
       address: "0xd10112521e860bdE82FD34f88113052e434930C4"
       abi: Vault
     mapping:
@@ -46,6 +51,8 @@ dataSources:
       abis:
         - name: Vault
           file: ./abis/Vault.json
+        - name: Oracle
+          file: ./abis/Oracle.json
       eventHandlers:
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handleTransfer
@@ -53,12 +60,15 @@ dataSources:
           handler: handleDeposit
         - event: Withdraw(indexed address,uint256,uint256)
           handler: handleWithdraw
+        - event: StrategyReported(indexed
+            address,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256)
+          handler: handleStrategyReported
       file: ./src/vault.ts
   - kind: ethereum
     name: Vault2
     network: fantom 
     source: 
-      startBlock: 20000000
+      startBlock: 22174000
       address: "0x92D2DdF8eed6f2bdB9a7890a00B07a48C9c7A658"
       abi: Vault
     mapping:
@@ -72,6 +82,8 @@ dataSources:
       abis:
         - name: Vault
           file: ./abis/Vault.json
+        - name: Oracle
+          file: ./abis/Oracle.json
       eventHandlers:
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handleTransfer
@@ -79,12 +91,15 @@ dataSources:
           handler: handleDeposit
         - event: Withdraw(indexed address,uint256,uint256)
           handler: handleWithdraw
+        - event: StrategyReported(indexed
+            address,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256)
+          handler: handleStrategyReported
       file: ./src/vault.ts
   - kind: ethereum
     name: Vault3
     network: fantom 
     source: 
-      startBlock: 20000000
+      startBlock: 22174000
       address: "0x38Da23Ef41333bE0d309Cd63166035FF3b7E2000"
       abi: Vault
     mapping:
@@ -98,6 +113,8 @@ dataSources:
       abis:
         - name: Vault
           file: ./abis/Vault.json
+        - name: Oracle
+          file: ./abis/Oracle.json
       eventHandlers:
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handleTransfer
@@ -105,12 +122,15 @@ dataSources:
           handler: handleDeposit
         - event: Withdraw(indexed address,uint256,uint256)
           handler: handleWithdraw
+        - event: StrategyReported(indexed
+            address,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256)
+          handler: handleStrategyReported
       file: ./src/vault.ts
   - kind: ethereum
     name: Vault4
     network: fantom 
     source: 
-      startBlock: 20000000
+      startBlock: 22174000
       address: "0x13994411Eda808B354F62db5490B344F431499ae"
       abi: Vault
     mapping:
@@ -124,6 +144,8 @@ dataSources:
       abis:
         - name: Vault
           file: ./abis/Vault.json
+        - name: Oracle
+          file: ./abis/Oracle.json
       eventHandlers:
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handleTransfer
@@ -131,12 +153,15 @@ dataSources:
           handler: handleDeposit
         - event: Withdraw(indexed address,uint256,uint256)
           handler: handleWithdraw
+        - event: StrategyReported(indexed
+            address,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256)
+          handler: handleStrategyReported
       file: ./src/vault.ts
   - kind: ethereum
     name: Vault5
     network: fantom 
     source: 
-      startBlock: 20000000
+      startBlock: 22174000
       address: "0x81F0f4fDF5148f09aAE811b5995D94F703ED0963"
       abi: Vault
     mapping:
@@ -150,6 +175,8 @@ dataSources:
       abis:
         - name: Vault
           file: ./abis/Vault.json
+        - name: Oracle
+          file: ./abis/Oracle.json
       eventHandlers:
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handleTransfer
@@ -157,12 +184,15 @@ dataSources:
           handler: handleDeposit
         - event: Withdraw(indexed address,uint256,uint256)
           handler: handleWithdraw
+        - event: StrategyReported(indexed
+            address,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256)
+          handler: handleStrategyReported
       file: ./src/vault.ts
   - kind: ethereum
     name: Vault6
     network: fantom 
     source: 
-      startBlock: 20000000
+      startBlock: 22174000
       address: "0x5EBeC9880a276841325081ED3ba728284E48Da76"
       abi: Vault
     mapping:
@@ -176,6 +206,8 @@ dataSources:
       abis:
         - name: Vault
           file: ./abis/Vault.json
+        - name: Oracle
+          file: ./abis/Oracle.json
       eventHandlers:
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handleTransfer
@@ -183,12 +215,15 @@ dataSources:
           handler: handleDeposit
         - event: Withdraw(indexed address,uint256,uint256)
           handler: handleWithdraw
+        - event: StrategyReported(indexed
+            address,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256)
+          handler: handleStrategyReported
       file: ./src/vault.ts
   - kind: ethereum
     name: Vault7
     network: fantom 
     source: 
-      startBlock: 20000000
+      startBlock: 22174000
       address: "0x14490098C27b864249FB3bAB629420943ac04cF3"
       abi: Vault
     mapping:
@@ -202,6 +237,8 @@ dataSources:
       abis:
         - name: Vault
           file: ./abis/Vault.json
+        - name: Oracle
+          file: ./abis/Oracle.json
       eventHandlers:
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handleTransfer
@@ -209,12 +246,15 @@ dataSources:
           handler: handleDeposit
         - event: Withdraw(indexed address,uint256,uint256)
           handler: handleWithdraw
+        - event: StrategyReported(indexed
+            address,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256)
+          handler: handleStrategyReported
       file: ./src/vault.ts
   - kind: ethereum
     name: Vault8
     network: fantom 
     source: 
-      startBlock: 20000000
+      startBlock: 22174000
       address: "0x21Ec0c99810C6f8703d3eEDF50e5d779061590FD"
       abi: Vault
     mapping:
@@ -228,6 +268,8 @@ dataSources:
       abis:
         - name: Vault
           file: ./abis/Vault.json
+        - name: Oracle
+          file: ./abis/Oracle.json
       eventHandlers:
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handleTransfer
@@ -235,12 +277,15 @@ dataSources:
           handler: handleDeposit
         - event: Withdraw(indexed address,uint256,uint256)
           handler: handleWithdraw
+        - event: StrategyReported(indexed
+            address,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256)
+          handler: handleStrategyReported
       file: ./src/vault.ts
   - kind: ethereum
     name: Vault9
     network: fantom 
     source: 
-      startBlock: 20000000
+      startBlock: 22174000
       address: "0x73d07a515cfe8d2C383E1610B959dac33b470A37"
       abi: Vault
     mapping:
@@ -254,6 +299,8 @@ dataSources:
       abis:
         - name: Vault
           file: ./abis/Vault.json
+        - name: Oracle
+          file: ./abis/Oracle.json
       eventHandlers:
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handleTransfer
@@ -261,5 +308,8 @@ dataSources:
           handler: handleDeposit
         - event: Withdraw(indexed address,uint256,uint256)
           handler: handleWithdraw
+        - event: StrategyReported(indexed
+            address,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256)
+          handler: handleStrategyReported
       file: ./src/vault.ts
 

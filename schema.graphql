@@ -26,3 +26,37 @@ type Transaction @entity {
   ts: BigInt!
   blockNumber: BigInt!
 }
+
+type StrategyReport @entity {
+  id: ID!
+  vault: Bytes!
+  strategy: Bytes!
+  from: Bytes!
+  hash: Bytes!
+  gain: BigInt!
+  loss: BigInt!
+  debtPaid: BigInt!
+  totalGain: BigInt!
+  totalLoss: BigInt!
+  debtAdded: BigInt!
+  debtRatio: BigInt!
+  tokenPrice: BigInt!
+  mgmtFee: BigInt!
+  performanceFee: BigInt!
+  strategistFee: BigInt!
+  mgmtFeePaid: BigInt!
+  performanceFeePaid: BigInt!
+  strategistFeePaid: BigInt!
+  pps: BigInt!
+  ts: BigInt!
+  blockNumber: BigInt!
+}
+
+type User @entity {
+  id: ID! # address:vault
+  addr: Bytes!
+  vault: Bytes!
+  sumDeposits: BigInt!
+  sumWithdrawals: BigInt!
+  profits: BigInt! # balanceOf(user) + sumWithdrawals - sumDeposits
+}

@@ -4,7 +4,7 @@ schema:
 dataSources:
   - kind: ethereum
     name: Vault
-    network: avalanche 
+    network: avalanche
     source:
       startBlock: 16650315
       address: "0x49d743E645C90ef4c6D5134533c1e62D08867b14"
@@ -20,6 +20,8 @@ dataSources:
       abis:
         - name: Vault
           file: ./abis/Vault.json
+        - name: Oracle
+          file: ./abis/Oracle.json
       eventHandlers:
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handleTransfer
@@ -27,10 +29,13 @@ dataSources:
           handler: handleDeposit
         - event: Withdraw(indexed address,uint256,uint256)
           handler: handleWithdraw
+        - event: StrategyReported(indexed
+            address,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256)
+          handler: handleStrategyReported
       file: ./src/vault.ts
   - kind: ethereum
     name: Vault2
-    network: avalanche 
+    network: avalanche
     source:
       startBlock: 16650315
       address: "0x7fc282B1B6162733084eE3F882624e2BD1ed941E"
@@ -46,6 +51,8 @@ dataSources:
       abis:
         - name: Vault
           file: ./abis/Vault.json
+        - name: Oracle
+          file: ./abis/Oracle.json
       eventHandlers:
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handleTransfer
@@ -53,4 +60,7 @@ dataSources:
           handler: handleDeposit
         - event: Withdraw(indexed address,uint256,uint256)
           handler: handleWithdraw
+        - event: StrategyReported(indexed
+            address,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256)
+          handler: handleStrategyReported
       file: ./src/vault.ts
