@@ -249,37 +249,50 @@ function saveUpdatedUserInfo(
   from: Address, 
   to: Address, 
   ):void{
-    
-    const id = `${event.transaction.hash.toHex()}:${event.logIndex}`
-    const updatedUser = new UserUpdated(id)
     const vault = Vault.bind(event.address)
     const pps = vault.pricePerShare()
-    updatedUser.vault = event.address
-    updatedUser.balance = vault.balanceOf(from)
-    updatedUser.pps = pps
-    updatedUser.ts = event.block.timestamp
-    updatedUser.blockNumber = event.block.number
-    
-    if (to.toHex() != ZERO_ADDRESS) {
-      const userAddr = to
-      const holder = getHolderEntity(userAddr, event.address)
-      holder.depositCount = holder.depositCount.plus(BigInt.fromU32(1))
+    const decimals = Bytes.fromBigInt(vault.decimals())[0]
+    const scale = BigInt.fromI32(10).pow(decimals)
 
-      updatedUser.addr = to
-      updatedUser.depositCount = holder.depositCount
-      holder.save()
-    }
-    if (from.toHex() != ZERO_ADDRESS) {
-      const userAddr = from
-      const holder = getHolderEntity(userAddr, event.address)
- 
-      holder.withdrawalCount = holder.withdrawalCount.plus(BigInt.fromU32(1))
-      updatedUser.addr = from
-      updatedUser.withdrawalCount = holder.withdrawalCount
-      holder.save()
-    }
+    const id = `${event.transaction.hash.toHex()}`
+    let updatedUser = UserUpdated.load(id)
+    if (updatedUser == null) {
+      updatedUser = new UserUpdated(id)
+      updatedUser.vault = event.address
+      updatedUser.pps = pps
+      updatedUser.ts = event.block.timestamp
+      updatedUser.blockNumber = event.block.number
+      
+      if (to.toHex() != ZERO_ADDRESS) {
+        const userAddr = to
+        const holder = getHolderEntity(userAddr, event.address)
+        holder.depositCount = holder.depositCount.plus(BigInt.fromU32(1))
 
-  updatedUser.save() 
+        // const balance = vault.balanceOf(userAddr).times(pps).div(scale)
+        updatedUser.balance = vault.balanceOf(userAddr)
+
+        updatedUser.addr = to
+        updatedUser.depositCount = holder.depositCount
+        holder.save()
+        updatedUser.save() 
+      }
+      if (from.toHex() != ZERO_ADDRESS) {
+        const userAddr = from
+        const holder = getHolderEntity(userAddr, event.address)
+        
+        // const balance = vault.balanceOf(event.address)
+        updatedUser.balance = vault.balanceOf(userAddr)
+  
+        holder.withdrawalCount = holder.withdrawalCount.plus(BigInt.fromU32(1))
+        updatedUser.addr = from
+        updatedUser.withdrawalCount = holder.withdrawalCount
+        holder.save()
+        updatedUser.save() 
+      }
+
+      
+    }
+  
 }
 
 function getHolderEntity(addr: Address, vault: Address): Holder {
