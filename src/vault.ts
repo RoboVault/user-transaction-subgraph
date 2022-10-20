@@ -9,7 +9,7 @@ import {
   StrategyReported,
 } from "../generated/Vault/Vault"
 import { Oracle } from "../generated/Vault/Oracle"
-import { DepositOrWithdraw, StrategyReport, Transaction, User, UserTransaction } from "../generated/schema"
+import { DepositOrWithdraw, StrategyReport, Transaction, User, UserTransaction, UserUpdated, Holder } from "../generated/schema"
 // import { Oracle } from '../generated/templates'
 
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
@@ -50,6 +50,11 @@ export function handleTransfer(event: Transfer): void {
         event.params.value,
         'transfer'
     )
+    saveUpdatedUserInfo(        
+      event,
+      event.params.sender,
+      event.params.receiver,
+      )
 }
 
 function saveDepositOrWithdraw(event: ethereum.Event, recipient: Address, amount: BigInt, type: string): void {
@@ -239,4 +244,54 @@ export function handleStrategyReported(event: StrategyReported): void {
   report.save()
 }
 
+function saveUpdatedUserInfo(    
+  event: ethereum.Event, 
+  from: Address, 
+  to: Address, 
+  ):void{
+    
+    const id = `${event.transaction.hash.toHex()}:${event.logIndex}`
+    const updatedUser = new UserUpdated(id)
+    const vault = Vault.bind(event.address)
+    const pps = vault.pricePerShare()
+    updatedUser.vault = event.address
+    updatedUser.balance = vault.balanceOf(from)
+    updatedUser.pps = pps
+    updatedUser.ts = event.block.timestamp
+    updatedUser.blockNumber = event.block.number
+    
+    if (to.toHex() != ZERO_ADDRESS) {
+      const userAddr = to
+      const holder = getHolderEntity(userAddr, event.address)
+      holder.depositCount = holder.depositCount.plus(BigInt.fromU32(1))
+
+      updatedUser.addr = to
+      updatedUser.depositCount = holder.depositCount
+      holder.save()
+    }
+    if (from.toHex() != ZERO_ADDRESS) {
+      const userAddr = from
+      const holder = getHolderEntity(userAddr, event.address)
+ 
+      holder.withdrawalCount = holder.withdrawalCount.plus(BigInt.fromU32(1))
+      updatedUser.addr = from
+      updatedUser.withdrawalCount = holder.withdrawalCount
+      holder.save()
+    }
+
+  updatedUser.save() 
+}
+
+function getHolderEntity(addr: Address, vault: Address): Holder {
+  const id = `${addr.toHex()}:${vault.toHex()}`
+  let holder = Holder.load(id)
+  if (holder == null) {
+    const holder = new Holder(id)
+    holder.addr = addr
+    holder.depositCount = BigInt.fromI32(0)
+    holder.withdrawalCount = BigInt.fromI32(0)
+    return holder
+  }
+  return holder
+}
 

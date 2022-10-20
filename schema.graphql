@@ -74,3 +74,22 @@ type UserTransaction @entity {
   type: String!
   pps: BigInt!
 }
+
+type Holder @entity {
+  id: ID! # address:vault
+  addr: Bytes!
+  depositCount:BigInt!
+  withdrawalCount:BigInt!
+}
+
+type UserUpdated @entity {
+  id: ID! # address:vault
+  addr: Bytes!
+  vault: Bytes!
+  balance: BigInt!
+  pps: BigInt!
+  depositCount: BigInt
+  withdrawalCount: BigInt
+  ts: BigInt!
+  blockNumber: BigInt!
+}
