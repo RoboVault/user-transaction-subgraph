@@ -1,8 +1,11 @@
 ## How to setup User-Transaction-Subgraph:
 
 **Step 1:** Clone repo https://github.com/RoboVault/user-transaction-subgraph.git
+
 **Step 2:** Create account in **The Graph**: https://thegraph.com/en/ and create your own Subgraph for local testing.
+
 **Step 3:** Open root folder of the cloned repo.
+
 **Step 4:** Run the following commands:
 
 > **Install packages:**
@@ -29,6 +32,7 @@
 ## How to query
 
 **Step 1:** Copy the GraphQL Endpoint URL of your Subgraph
+
 **Step 2:** Use this playground: https://cloud.hasura.io/public/graphiql
 
 ## Documentation
