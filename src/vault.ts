@@ -198,7 +198,7 @@ function saveTransaction(
   }
 
   // Vault Statistic: capture total users
-  if (from.toHex() != ZERO_ADDRESS) {
+  if (to.toHex() != ZERO_ADDRESS) {
     const userAddr = to
 
     // Check tokenBalance of being transferred to an account
