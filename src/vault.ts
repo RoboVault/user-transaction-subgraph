@@ -213,7 +213,7 @@ function saveTransaction(
       statistic.totalUsers = statistic.totalUsers.plus(BigInt.fromI32(1))
     }
 
-     // TODO: Get the total amount of profits
+
     if (from.toHex() != ZERO_ADDRESS) {
       const userAddrFrom = getUserEntity(from, event.address)
       const userAddrTo = getUserEntity(to, event.address)
