@@ -207,6 +207,7 @@ function saveTransaction(
 
     // get vaultStat using id
     const statistic = getVaultStatisticEntity(event.address)
+    statistic.symbol = vault.symbol()
 
     // if balance === 0, increment totalUser
     if (balanceToken.isZero()) {
