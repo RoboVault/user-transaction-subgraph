@@ -66,7 +66,9 @@ type User @entity {
 type VaultStatistic @entity {
   id: ID! # address:vault
   vault: Bytes!
-  totalUsers: BigInt!,
+  symbol: String!
+  decimals: BigInt!
+  totalUsers: BigInt!
   totalUsersProfits: BigInt!
 }
 

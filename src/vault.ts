@@ -208,12 +208,12 @@ function saveTransaction(
     // get vaultStat using id
     const statistic = getVaultStatisticEntity(event.address)
     statistic.symbol = vault.symbol()
+    statistic.decimals = BigInt.fromI32(decimals)
 
     // if balance === 0, increment totalUser
     if (balanceToken.isZero()) {
       statistic.totalUsers = statistic.totalUsers.plus(BigInt.fromI32(1))
     }
-
 
     if (from.toHex() != ZERO_ADDRESS) {
       const userAddrFrom = getUserEntity(from, event.address)
