@@ -99,6 +99,7 @@ function getVaultStatisticEntity(vault: Bytes): VaultStatistic {
     stat.vault = vault
     stat.totalUsers = BigInt.fromI32(1)
     stat.totalUsersProfits = BigInt.fromI32(0)
+    stat.totalAssets = BigInt.fromI32(0)
 
     return stat
   }
@@ -216,10 +217,17 @@ function saveTransaction(
     }
 
     if (from.toHex() != ZERO_ADDRESS) {
+      // Get total user profits
       const userAddrFrom = getUserEntity(from, event.address)
       const userAddrTo = getUserEntity(to, event.address)
 
       statistic.totalUsersProfits = statistic.totalUsersProfits.plus(userAddrFrom.profits).plus(userAddrTo.profits)
+
+      // Get total user assets
+      const userBalanceFrom = vault.balanceOf(from).times(pps).div(scale)
+      const userBalanceTo = vault.balanceOf(to).times(pps).div(scale)
+
+      statistic.totalAssets = statistic.totalAssets.plus(userBalanceFrom).plus(userBalanceTo)
     }
 
     statistic.save()

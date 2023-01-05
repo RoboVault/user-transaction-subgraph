@@ -70,6 +70,7 @@ type VaultStatistic @entity {
   decimals: BigInt!
   totalUsers: BigInt!
   totalUsersProfits: BigInt!
+  totalAssets: BigInt!
 }
 
 type UserTransaction @entity {
