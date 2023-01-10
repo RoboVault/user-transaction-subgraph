@@ -226,8 +226,8 @@ function saveTransaction(
       // Get total user assets
       const userBalanceFrom = vault.balanceOf(from).times(pps).div(scale)
       const userBalanceTo = vault.balanceOf(to).times(pps).div(scale)
-
-      statistic.totalAssets = statistic.totalAssets.plus(userBalanceFrom).plus(userBalanceTo)
+      
+      statistic.totalAssets = statistic.totalAssets.plus(userBalanceTo).minus(userBalanceFrom) //.plus(userBalanceFrom)
     }
 
     statistic.save()
