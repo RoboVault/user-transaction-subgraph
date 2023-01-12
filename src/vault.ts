@@ -1,4 +1,7 @@
-import { Address, bigInt, BigInt, Bytes, ethereum, log, typeConversion, TypedMap, Value } from "@graphprotocol/graph-ts"
+import {
+  Address, bigInt, BigInt, Bytes, ethereum,
+  log, typeConversion, TypedMap, Value
+} from "@graphprotocol/graph-ts"
 import {
   Vault,
   Transfer,
@@ -9,7 +12,10 @@ import {
   StrategyReported,
 } from "../generated/Vault/Vault"
 import { Oracle } from "../generated/Vault/Oracle"
-import { DepositOrWithdraw, StrategyReport, Transaction, User, UserTransaction } from "../generated/schema"
+import {
+  DepositOrWithdraw, StrategyReport, Transaction, User,
+  UserTransaction, VaultStatistic
+} from "../generated/schema"
 // import { Oracle } from '../generated/templates'
 
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
@@ -82,6 +88,23 @@ function getUserEntity(addr: Address, vault: Address): User {
     return user
   }
   return user
+}
+
+function getVaultStatisticEntity(vault: Bytes): VaultStatistic {
+  const id = `${vault.toHex()}`
+  let statistic = VaultStatistic.load(id)
+
+  if (statistic == null) {
+    const stat = new VaultStatistic(id)
+    stat.vault = vault
+    stat.totalUsers = BigInt.fromI32(1)
+    stat.totalUsersProfits = BigInt.fromI32(0)
+    stat.totalAssets = BigInt.fromI32(0)
+
+    return stat
+  }
+
+  return statistic
 }
 
 function createUserTransaction(
@@ -175,13 +198,47 @@ function saveTransaction(
       user.save()
       createUserTransaction(event, user.id, from, to, amount, tokenAmount, 'withdraw', pps)
     }
+
+  // Vault Statistic: capture total users
+  if (to.toHex() != ZERO_ADDRESS) {
+    const userAddr = to
+
+    // Check tokenBalance of being transferred to an account
+    const balanceToken = vault.balanceOf(userAddr)
+
+    // get vaultStat using id
+    const statistic = getVaultStatisticEntity(event.address)
+    statistic.symbol = vault.symbol()
+    statistic.decimals = BigInt.fromI32(decimals)
+
+    // if balance === 0, increment totalUser
+    if (balanceToken.isZero()) {
+      statistic.totalUsers = statistic.totalUsers.plus(BigInt.fromI32(1))
+    }
+
+    if (from.toHex() != ZERO_ADDRESS) {
+      // Get total user profits
+      const userAddrFrom = getUserEntity(from, event.address)
+      const userAddrTo = getUserEntity(to, event.address)
+
+      statistic.totalUsersProfits = statistic.totalUsersProfits.plus(userAddrFrom.profits).plus(userAddrTo.profits)
+
+      // Get total user assets
+      const userBalanceFrom = vault.balanceOf(from).times(pps).div(scale)
+      const userBalanceTo = vault.balanceOf(to).times(pps).div(scale)
+      
+      statistic.totalAssets = statistic.totalAssets.plus(userBalanceTo).minus(userBalanceFrom) //.plus(userBalanceFrom)
+    }
+
+    statistic.save()
+  }
 }
 
 export function handleApproval(event: Approval): void {
 
 }
 export function handleSweep(event: Sweep): void {
-  
+
 }
 
 function getOracle(token: string): string {

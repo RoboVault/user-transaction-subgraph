@@ -63,6 +63,16 @@ type User @entity {
   transactions: [UserTransaction!]! @derivedFrom(field: "user")
 }
 
+type VaultStatistic @entity {
+  id: ID! # address:vault
+  vault: Bytes!
+  symbol: String!
+  decimals: BigInt!
+  totalUsers: BigInt!
+  totalUsersProfits: BigInt!
+  totalAssets: BigInt!
+}
+
 type UserTransaction @entity {
   id: ID! # address:vault
   hash: Bytes!
